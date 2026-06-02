@@ -1,0 +1,1201 @@
+/* ======================================================
+   NetTopology — Premium Design System
+   ====================================================== */
+
+/* CSS Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background:
+    radial-gradient(circle at top left, rgba(34, 211, 238, 0.08), transparent 25%),
+    radial-gradient(circle at top right, rgba(96, 165, 250, 0.08), transparent 25%),
+    linear-gradient(180deg, #0b0f18 0%, #121826 45%, #0b0f18 100%);
+}
+
+/* ========== Design Tokens ========== */
+:root {
+   /* Typography */
+   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+   --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+   --font-mono: 'JetBrains Mono', 'Fira Code', 'Monaco', 'Consolas', monospace;
+
+   /* Color Palette */
+   --bg-deep: #08111f;
+   --bg-base: #0b1220;
+   --bg-surface: #111a2e;
+   --bg-elevated: #182338;
+   --bg-card: rgba(15, 23, 42, 0.88);
+
+   --accent-cyan: #14b8a6;
+   --accent-blue: #3b82f6;
+   --accent-indigo: #6366f1;
+   --accent-purple: #8b5cf6;
+   --accent-amber: #f59e0b;
+   --accent-emerald: #22c55e;
+   --accent-rose: #f43f5e;
+   --accent-electric-blue: #2563eb;
+   --accent-teal: #0f766e;
+
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+  --text-muted: #475569;
+
+  /* Borders */
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.15);
+  --border-active: rgba(34, 211, 238, 0.35);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-color-hover: rgba(255, 255, 255, 0.15);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.5);
+  --shadow-glow-cyan: 0 0 20px rgba(34, 211, 238, 0.15), 0 0 60px rgba(34, 211, 238, 0.05);
+  --shadow-glow-blue: 0 0 20px rgba(96, 165, 250, 0.15);
+
+  /* Glass */
+  --glass-bg: rgba(14, 20, 37, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: blur(24px) saturate(140%);
+
+  /* Transitions */
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition-fluid: 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+}
+
+/* ========== Animations ========== */
+@keyframes flow-dash {
+  0% { stroke-dashoffset: 28; }
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes breathe {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
+  50% { box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.12); }
+}
+
+@keyframes drift {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -8px, 0); }
+}
+
+/* ========== Scrollbar ========== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ========== App Shell ========== */
+.cisco-app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+}
+
+.cisco-app::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: linear-gradient(180deg, rgba(0,0,0,0.7), transparent 80%);
+  opacity: 0.45;
+}
+
+/* ========== Glass Panel ========== */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-md);
+}
+
+/* ========== Glass Input ========== */
+.glass-input {
+  width: 100%;
+  background: rgba(14, 20, 37, 0.85);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.glass-input:focus {
+  outline: none;
+  border-color: var(--border-active);
+  box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.2);
+}
+
+.glass-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* ========== Glass Button ========== */
+.glass-button {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.glass-button:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: var(--border-hover);
+}
+
+.glass-button.primary {
+  background: rgba(34, 211, 238, 0.1);
+  border-color: rgba(34, 211, 238, 0.3);
+  color: var(--accent-cyan);
+}
+
+.glass-button.primary:hover {
+  background: rgba(34, 211, 238, 0.18);
+  box-shadow: 0 0 16px rgba(34, 211, 238, 0.12);
+}
+
+.glass-button.active {
+  background: rgba(96, 165, 250, 0.12);
+  border-color: var(--accent-blue);
+  color: #fff;
+}
+
+/* ========== Top Bar ========== */
+.cisco-top-bar {
+  border-bottom: 1px solid var(--border-default);
+  background: rgba(10, 14, 23, 0.97);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1000;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03), var(--shadow-md);
+}
+
+.workspace-status-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(9, 13, 22, 0.78);
+  backdrop-filter: blur(18px) saturate(130%);
+  -webkit-backdrop-filter: blur(18px) saturate(130%);
+  position: relative;
+  z-index: 1;
+}
+
+.workspace-status-chip,
+.workspace-status-group,
+.workspace-status-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 5px 10px;
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  line-height: 1;
+}
+
+.workspace-status-chip {
+  color: #dbeafe;
+  border-color: rgba(34, 211, 238, 0.16);
+  box-shadow: var(--shadow-sm);
+}
+
+.workspace-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-emerald);
+  box-shadow: 0 0 10px rgba(52, 211, 153, 0.55);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.workspace-status-group span,
+.workspace-status-hint {
+  color: var(--text-tertiary);
+}
+
+.workspace-status-group strong {
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+
+.workspace-status-hint {
+  margin-left: auto;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.workspace-shell {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  padding: 4px;
+  gap: 6px;
+}
+
+.workspace-main {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* ========== Menu Bar ========== */
+.cisco-menu-bar {
+  display: flex;
+  align-items: stretch;
+  padding: 0 12px;
+  min-height: 36px;
+  gap: 2px;
+  user-select: none;
+}
+
+.cisco-menu-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 16px;
+  border-right: 1px solid var(--border-default);
+  margin-right: 6px;
+}
+
+.cisco-menu-brand-logo {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(34,211,238,0.2), rgba(129,140,248,0.2));
+  border: 1px solid rgba(34,211,238,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-cyan);
+  font-size: 14px;
+  box-shadow: 0 0 12px rgba(34,211,238,0.1);
+}
+
+.cisco-menu-brand-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.82rem;
+  letter-spacing: 0.3px;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.cisco-menu-brand-sub {
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-indigo));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+.cisco-menu-item {
+  position: relative;
+}
+
+.cisco-menu-trigger {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  padding: 0 10px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  transition: all var(--transition-fast);
+  font-family: var(--font-sans);
+  border-radius: var(--radius-sm);
+}
+
+.cisco-menu-trigger:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cisco-menu-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 220px;
+  background: rgba(14, 20, 37, 0.97);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-hover);
+  border-radius: var(--radius-md);
+  padding: 6px;
+  z-index: 1010;
+  box-shadow: var(--shadow-lg), var(--shadow-glow-cyan);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  animation: slideDown 0.2s ease-out;
+}
+
+.cisco-menu-option {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  text-align: left;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all var(--transition-fast);
+  font-family: var(--font-sans);
+  letter-spacing: 0.15px;
+}
+
+.cisco-menu-option:hover {
+  background: rgba(34, 211, 238, 0.1);
+  color: #fff;
+  transform: translateX(2px);
+}
+
+/* ========== Toolbar ========== */
+.cisco-toolbar {
+   display: flex;
+   align-items: center;
+   padding: 4px 10px;
+   gap: 4px;
+   user-select: none;
+   flex-wrap: wrap;
+   min-height: 38px;
+   box-sizing: border-box;
+   background: linear-gradient(180deg, rgba(14, 20, 37, 0.9), rgba(10, 15, 29, 0.95));
+   border-bottom: 1px solid var(--border-subtle);
+}
+
+.cisco-toolbar-group {
+   display: flex;
+   align-items: center;
+   gap: 3px;
+   padding: 0 8px;
+   border-right: 1px solid var(--border-subtle);
+}
+
+.cisco-toolbar-group:last-child {
+   border-right: none;
+}
+
+.cisco-tool-btn {
+  appearance: none;
+  border: 1px solid var(--border-default);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 0.73rem;
+  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: all var(--transition-fast);
+  letter-spacing: 0.2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cisco-tool-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.cisco-tool-btn:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.cisco-tool-btn:hover::before {
+  opacity: 1;
+}
+
+.cisco-tool-btn:active {
+  transform: translateY(0);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.cisco-tool-btn.primary {
+  background: rgba(34, 211, 238, 0.1);
+  border-color: rgba(34, 211, 238, 0.3);
+  color: var(--accent-cyan);
+}
+
+.cisco-tool-btn.primary:hover {
+  background: rgba(34, 211, 238, 0.18);
+  box-shadow: 0 0 16px rgba(34, 211, 238, 0.12);
+}
+
+.cisco-tool-btn.danger {
+  background: rgba(251, 113, 133, 0.08);
+  border-color: rgba(251, 113, 133, 0.25);
+  color: #fecdd3;
+}
+
+.cisco-tool-btn.danger:hover {
+  background: rgba(251, 113, 133, 0.18);
+  box-shadow: 0 0 16px rgba(251, 113, 133, 0.12);
+}
+
+.cisco-tool-btn.active {
+  background: rgba(96, 165, 250, 0.12);
+  border-color: var(--accent-blue);
+  color: #fff;
+  box-shadow: 0 0 16px rgba(96, 165, 250, 0.15);
+}
+
+.cisco-tool-separator {
+  display: inline-block;
+  width: 1px;
+  height: 20px;
+  background: var(--border-default);
+  opacity: 0.7;
+  margin: 0 2px;
+}
+
+.cisco-zoom-group {
+   display: flex;
+   align-items: center;
+   gap: 3px;
+   padding: 0 4px;
+}
+
+.cisco-zoom-value {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  width: 38px;
+  text-align: center;
+  user-select: none;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 2px 4px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+/* ========== Logical / Physical Bar ========== */
+.cisco-logical-bar {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(180deg, rgba(14, 20, 37, 0.95), rgba(10, 15, 29, 0.98));
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 3px 12px;
+  min-height: 32px;
+}
+
+.cisco-tab-switch {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-sm);
+  padding: 2px;
+  border: 1px solid var(--border-subtle);
+}
+
+.cisco-tab {
+  appearance: none;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-tertiary);
+  padding: 4px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  font-family: var(--font-display);
+  transition: all var(--transition-fast);
+  text-transform: uppercase;
+}
+
+.cisco-tab:hover {
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.cisco-tab.active {
+  background: rgba(34, 211, 238, 0.12);
+  border-color: rgba(34, 211, 238, 0.25);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.08);
+}
+
+.cisco-status-metrics {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-left: auto;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  letter-spacing: 0.2px;
+}
+
+.cisco-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(34, 211, 238, 0.06);
+  border: 1px solid rgba(34, 211, 238, 0.15);
+  padding: 3px 12px;
+  border-radius: var(--radius-full);
+  color: var(--accent-cyan);
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* ========== Canvas ========== */
+.cisco-canvas-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+}
+
+.cisco-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-tertiary);
+  font-size: 0.95rem;
+  font-family: var(--font-display);
+  letter-spacing: 0.2px;
+}
+
+/* ========== Bottom Dock ========== */
+.cisco-bottom-dock {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0;
+  background: linear-gradient(0deg, var(--bg-deep), var(--bg-surface));
+  border-top: 1px solid var(--border-default);
+  overflow: hidden;
+  user-select: none;
+  box-shadow: 0 -2px 24px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.cisco-bottom-dock,
+.glass-panel,
+.cisco-menu-dropdown,
+.cisco-toolbar,
+.cisco-logical-bar {
+  backdrop-filter: blur(18px) saturate(130%);
+  -webkit-backdrop-filter: blur(18px) saturate(130%);
+}
+
+.cisco-bottom-dock::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.2), rgba(129, 140, 248, 0.2), transparent);
+}
+
+.cisco-dock-column-resize {
+  width: 6px;
+  cursor: col-resize;
+  background: transparent;
+  transition: background var(--transition-smooth);
+  flex-shrink: 0;
+  z-index: 5;
+  position: relative;
+}
+
+.cisco-dock-column-resize::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-fast);
+}
+
+.cisco-dock-column-resize:hover::after,
+.cisco-dock-column-resize.dragging::after {
+  background: var(--accent-cyan);
+  height: 30px;
+  box-shadow: 0 0 8px rgba(34, 211, 238, 0.3);
+}
+
+.cisco-dock-col {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+  flex: 0 0 auto;
+}
+
+.cisco-dock-col:last-child {
+  flex: 1 1 260px;
+}
+
+.cisco-dock-col-header {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.cisco-dock-col-title {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.cisco-dock-scroll {
+  flex: 1;
+  overflow: auto;
+  padding: 6px;
+}
+
+.cisco-dock-device-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(74px, 1fr));
+  gap: 6px;
+}
+
+.cisco-device-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 6px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-default);
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  transition: all var(--transition-smooth);
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+}
+
+.cisco-device-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.08), transparent);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.cisco-device-card:hover {
+  background: rgba(34, 211, 238, 0.08);
+  border-color: rgba(34, 211, 238, 0.3);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(34, 211, 238, 0.1);
+}
+
+.cisco-device-card:hover::before {
+  opacity: 1;
+}
+
+.cisco-device-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+/* ========== Sidebar ========== */
+.cisco-sidebar {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-left: 1px solid var(--border-default);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.cisco-sidebar-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  border-bottom: 1px solid var(--border-default);
+  background: rgba(14, 20, 37, 0.9);
+}
+
+.cisco-sidebar-tab {
+  appearance: none;
+  border: none;
+  background: transparent;
+  border-bottom: 2px solid transparent;
+  color: var(--text-tertiary);
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  font-family: var(--font-display);
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+.cisco-sidebar-tab:hover {
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.cisco-sidebar-tab.active {
+  color: #fff;
+  border-bottom-color: var(--accent-cyan);
+  background: rgba(34, 211, 238, 0.04);
+}
+
+.cisco-sidebar-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 2px;
+  background: var(--accent-cyan);
+  box-shadow: 0 0 8px rgba(34, 211, 238, 0.3);
+  border-radius: var(--radius-full);
+}
+
+/* ========== Device Node Effects ========== */
+.cisco-device-node {
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+  transition: filter var(--transition-smooth);
+}
+
+.cisco-device-node.selected {
+  filter: drop-shadow(0 0 8px var(--accent-cyan)) drop-shadow(0 2px 12px rgba(0,0,0,0.3));
+}
+
+.cisco-device-node.connection-source {
+  filter: drop-shadow(0 0 12px var(--accent-amber)) drop-shadow(0 2px 12px rgba(0,0,0,0.3));
+}
+
+/* ========== Splitter Handles ========== */
+.splitter-vertical {
+  width: 5px;
+  cursor: col-resize;
+  user-select: none;
+  touch-action: none;
+  position: relative;
+  flex-shrink: 0;
+  z-index: 10;
+  background: transparent;
+}
+
+.splitter-vertical::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  background: var(--border-default);
+  transition: all var(--transition-smooth);
+}
+
+.splitter-vertical::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 3px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-smooth);
+}
+
+.splitter-vertical:hover::before {
+  width: 2px;
+  background: rgba(34, 211, 238, 0.4);
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.2);
+}
+
+.splitter-vertical:hover::after {
+  background: var(--accent-cyan);
+  height: 40px;
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.3);
+}
+
+.splitter-horizontal {
+  height: 5px;
+  cursor: row-resize;
+  user-select: none;
+  touch-action: none;
+  position: relative;
+  flex-shrink: 0;
+  z-index: 10;
+  background: transparent;
+}
+
+.splitter-horizontal::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 1px;
+  background: var(--border-default);
+  transition: all var(--transition-smooth);
+}
+
+.splitter-horizontal::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-smooth);
+}
+
+.splitter-horizontal:hover::before {
+  height: 2px;
+  background: rgba(34, 211, 238, 0.4);
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.2);
+}
+
+.splitter-horizontal:hover::after {
+  background: var(--accent-cyan);
+  width: 40px;
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.3);
+}
+
+/* ========== Empty State ========== */
+.empty-state-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.empty-state-container:hover .empty-state-icon {
+  animation-duration: 2.2s;
+}
+
+.workspace-empty {
+  border-radius: 16px;
+  margin: 0;
+  background:
+    radial-gradient(circle at top, rgba(34, 211, 238, 0.10), transparent 40%),
+    linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(10, 15, 29, 0.96));
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), var(--shadow-lg);
+}
+
+.physical-view-card {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at top, rgba(34, 211, 238, 0.08), transparent 35%),
+    linear-gradient(180deg, rgba(20, 26, 39, 0.98), rgba(14, 20, 30, 0.98));
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.06);
+  color: var(--text-secondary);
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), var(--shadow-lg);
+  animation: fadeInUp 0.35s ease-out;
+}
+
+.physical-view-title {
+  font-size: 2rem;
+  letter-spacing: 0.2px;
+  color: var(--text-primary);
+}
+
+.empty-state-container::before {
+  content: '';
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.06), transparent 70%);
+  border-radius: 50%;
+  animation: breathe 4s ease-in-out infinite;
+}
+
+.empty-state-icon {
+  font-size: 4.5rem;
+  margin-bottom: 20px;
+  animation: float 3s ease-in-out infinite;
+  position: relative;
+  z-index: 1;
+}
+
+.empty-state-title {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #e2e8f0, var(--accent-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  z-index: 1;
+}
+
+.empty-state-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  max-width: 400px;
+  line-height: 1.5;
+  position: relative;
+  z-index: 1;
+}
+
+.empty-state-hint {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  max-width: 360px;
+  line-height: 1.4;
+  position: relative;
+  z-index: 1;
+}
+
+/* ========== Canvas Info Badge ========== */
+.canvas-info-badge {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: rgba(14, 20, 37, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+  padding: 5px 14px;
+  box-shadow: var(--shadow-sm);
+  z-index: 2;
+}
+
+.canvas-info-badge .badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-emerald);
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.4);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* ========== Table (event list) ========== */
+.cisco-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+}
+
+.cisco-table-header {
+  display: flex;
+  padding: 0 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid var(--border-subtle);
+  user-select: none;
+  min-height: 30px;
+  align-items: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.cisco-table-header > span {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 4px;
+  cursor: ns-resize;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ========== Utility ========== */
+.text-gradient {
+   background: linear-gradient(135deg, var(--accent-cyan), var(--accent-indigo));
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+   background-clip: text;
+}
+
+/* ========== Privacy Policy ========== */
+.privacy-policy-link {
+   position: fixed;
+   bottom: 6px;
+   left: 6px;
+   font-size: 0.65rem;
+   color: var(--text-tertiary);
+   text-decoration: none;
+   transition: color var(--transition-fast);
+   z-index: 100;
+   font-family: var(--font-mono);
+   letter-spacing: 0.2px;
+}
+
+.privacy-policy-link:hover {
+   color: var(--accent-cyan);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

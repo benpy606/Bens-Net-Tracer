@@ -13,23 +13,23 @@ interface DeviceNodeProps {
 }
 
 const getDeviceColor = (type: DeviceType): string => {
-  switch (type) {
-    case 'router': return '#22d3ee';
-    case 'switch': return '#60a5fa';
-    case 'server': return '#34d399';
-    case 'firewall': return '#fb7185';
-    case 'pc': return '#a78bfa';
-  }
+   switch (type) {
+     case 'router': return 'var(--accent-primary)';
+     case 'switch': return 'var(--accent-secondary)';
+     case 'server': return 'var(--accent-magenta)';
+     case 'firewall': return 'var(--accent-magenta)';
+     case 'pc': return 'var(--accent-primary)';
+   }
 };
 
 const getDeviceGradient = (type: DeviceType): [string, string] => {
-  switch (type) {
-    case 'router': return ['#22d3ee', '#06b6d4'];
-    case 'switch': return ['#60a5fa', '#3b82f6'];
-    case 'server': return ['#34d399', '#10b981'];
-    case 'firewall': return ['#fb7185', '#ef4444'];
-    case 'pc': return ['#a78bfa', '#8b5cf6'];
-  }
+   switch (type) {
+     case 'router': return ['var(--accent-primary)', 'var(--accent-secondary)'];
+     case 'switch': return ['var(--accent-secondary)', 'var(--accent-primary)'];
+     case 'server': return ['var(--accent-magenta)', 'var(--accent-primary)'];
+     case 'firewall': return ['var(--accent-magenta)', 'var(--accent-secondary)'];
+     case 'pc': return ['var(--accent-primary)', 'var(--accent-secondary)'];
+   }
 };
 
 export const DeviceNode: React.FC<DeviceNodeProps> = ({
@@ -99,39 +99,39 @@ export const DeviceNode: React.FC<DeviceNodeProps> = ({
       </defs>
 
       {/* Glow effect behind selected node */}
-      {(isSelected || isConnectionSource) && (
-        <rect
-          x="-8"
-          y="-8"
-          width={size + 16}
-          height={size + 16}
-          rx="12"
-          fill="none"
-          stroke={isConnectionSource ? '#fbbf24' : color}
-          strokeWidth="2"
-          strokeDasharray={isConnectionSource ? '5 5' : '0'}
-          style={{
-            opacity: 0.7,
-            filter: `drop-shadow(0 0 8px ${isConnectionSource ? 'rgba(251,191,36,0.4)' : color + '60'})`,
-          }}
-        />
-      )}
+{(isSelected || isConnectionSource) && (
+         <rect
+           x="-8"
+           y="-8"
+           width={size + 16}
+           height={size + 16}
+           rx="12"
+           fill="none"
+           stroke={isConnectionSource ? 'var(--accent-secondary)' : color}
+           strokeWidth="2"
+           strokeDasharray={isConnectionSource ? '5 5' : '0'}
+           style={{
+             opacity: 0.7,
+             filter: `drop-shadow(0 0 8px ${isConnectionSource ? 'var(--border-active)' : 'var(--border-active)'})`,
+           }}
+         />
+       )}
 
-      {/* Main Node Background */}
-      <rect
-        x="0"
-        y="0"
-        width={size}
-        height={size}
-        rx="10"
-        fill={isPowerOff ? '#1e293b' : '#0f172a'}
-        stroke={isSelected ? color : 'rgba(255,255,255,0.08)'}
-        strokeWidth={isSelected ? '1.5' : '1'}
-        style={{
-          transition: 'stroke 0.25s ease, stroke-width 0.25s ease',
-          opacity: isPowerOff ? 0.5 : 1,
-        }}
-      />
+       {/* Main Node Background */}
+       <rect
+         x="0"
+         y="0"
+         width={size}
+         height={size}
+         rx="10"
+         fill={isPowerOff ? 'var(--bg-surface)' : 'var(--bg-base)'}
+         stroke={isSelected ? color : 'var(--border-default)'}
+         strokeWidth={isSelected ? '1.5' : '1'}
+         style={{
+           transition: 'stroke 0.25s ease, stroke-width 0.25s ease',
+           opacity: isPowerOff ? 0.5 : 1,
+         }}
+       />
 
       {/* Gradient overlay */}
       <rect
@@ -203,87 +203,82 @@ export const DeviceNode: React.FC<DeviceNodeProps> = ({
         )}
       </g>
 
-      {/* Label underneath */}
-      <text
-        x={radius}
-        y={size + 24}
-        textAnchor="middle"
-        fill="#e2e8f0"
-        style={{ fontSize: '10px', fontWeight: 600, fontFamily: "'Inter', sans-serif", letterSpacing: '0.2px' }}
-      >
-        {device.name}
-      </text>
+{/* Label underneath */}
+       <text
+         x={radius}
+         y={size + 24}
+         textAnchor="middle"
+         fill="var(--text-primary)"
+         style={{ fontSize: '10px', fontWeight: 600, fontFamily: "'Inter', sans-serif", letterSpacing: '0.2px' }}
+       >
+         {device.name}
+       </text>
 
-      {/* IP Address Label under name */}
-      {device.ipAddress && (
-        <text
-          x={radius}
-          y={size + 38}
-          textAnchor="middle"
-          fill="#64748b"
-          style={{ fontSize: '8px', fontFamily: "'JetBrains Mono', monospace", fontWeight: 500 }}
-        >
-          {device.ipAddress}
-          {device.subnetMask && `/${device.subnetMask}`}
-        </text>
-      )}
+       {/* IP Address Label under name */}
+       {device.ipAddress && (
+         <text
+           x={radius}
+           y={size + 38}
+           textAnchor="middle"
+           fill="var(--text-tertiary)"
+           style={{ fontSize: '8px', fontFamily: "'JetBrains Mono', monospace", fontWeight: 500 }}
+         >
+           {device.ipAddress}
+           {device.subnetMask && `/${device.subnetMask}`}
+         </text>
+       )}
 
-      {/* Power status indicator */}
-      <circle
-        cx={size - 7}
-        cy={7}
-        r="4"
-        fill={isPowerOff ? '#ef4444' : '#22c55e'}
-        stroke="rgba(0,0,0,0.3)"
-        strokeWidth="0.5"
-        style={{
-          filter: isPowerOff
-            ? 'drop-shadow(0 0 3px rgba(239,68,68,0.5))'
-            : 'drop-shadow(0 0 3px rgba(34,197,94,0.5))',
-        }}
-      />
+       {/* Power status indicator - flat, no glow */}
+       <circle
+         cx={size - 7}
+         cy={7}
+         r="4"
+         fill={isPowerOff ? 'var(--accent-magenta)' : 'var(--accent-primary)'}
+         stroke="rgba(0,0,0,0.3)"
+         strokeWidth="0.5"
+       />
 
-      {/* Connection Port Pin */}
-      <g
-        onMouseDown={(e) => e.stopPropagation()}
-        onClick={handlePortClick}
-        style={{ cursor: 'pointer' }}
-      >
-        <circle
-          cx={size - 6}
-          cy={size - 6}
-          r="5"
-          fill={isConnectionSource ? '#fbbf24' : 'rgba(255, 255, 255, 0.08)'}
-          stroke={isConnectionSource ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.2)'}
-          strokeWidth="1"
-          style={{
-            transition: 'all 0.2s ease',
-            filter: isConnectionSource ? 'drop-shadow(0 0 6px rgba(251,191,36,0.5))' : 'none',
-          }}
-        />
-        {/* Port icon */}
-        <circle
-          cx={size - 6}
-          cy={size - 6}
-          r="2"
-          fill={isConnectionSource ? '#fff' : 'rgba(255, 255, 255, 0.3)'}
-          style={{ pointerEvents: 'none' }}
-        />
-      </g>
-      <title>Click port to connect this device</title>
+{/* Connection Port Pin */}
+       <g
+         onMouseDown={(e) => e.stopPropagation()}
+         onClick={handlePortClick}
+         style={{ cursor: 'pointer' }}
+       >
+         <circle
+           cx={size - 6}
+           cy={size - 6}
+           r="5"
+           fill={isConnectionSource ? 'var(--accent-secondary)' : 'var(--border-default)'}
+           stroke={isConnectionSource ? 'var(--border-hover)' : 'var(--border-secondary)'}
+           strokeWidth="1"
+           style={{
+             transition: 'all 0.2s ease',
+             filter: isConnectionSource ? 'drop-shadow(0 0 6px var(--border-active))' : 'none',
+           }}
+         />
+         {/* Port icon */}
+         <circle
+           cx={size - 6}
+           cy={size - 6}
+           r="2"
+           fill={isConnectionSource ? '#fff' : 'var(--text-secondary)'}
+           style={{ pointerEvents: 'none' }}
+         />
+       </g>
+       <title>Click port to connect this device</title>
 
-      {/* Delete Overlay Button */}
-      {isSelected && (
-        <g
-          transform="translate(-6, -6)"
-          onClick={handleDeleteClick}
-          style={{ cursor: 'pointer' }}
-        >
-          <circle cx="8" cy="8" r="8" fill="#ef4444" stroke="rgba(0,0,0,0.3)" strokeWidth="0.5"
-            style={{ filter: 'drop-shadow(0 2px 4px rgba(239,68,68,0.4))' }} />
-          <path d="M5.5 5.5l5 5M10.5 5.5l-5 5" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" />
-        </g>
-      )}
+       {/* Delete Overlay Button */}
+       {isSelected && (
+         <g
+           transform="translate(-6, -6)"
+           onClick={handleDeleteClick}
+           style={{ cursor: 'pointer' }}
+         >
+           <circle cx="8" cy="8" r="8" fill="var(--accent-magenta)" stroke="rgba(0,0,0,0.3)" strokeWidth="0.5"
+             style={{ filter: 'drop-shadow(0 2px 4px var(--border-active))' }} />
+           <path d="M5.5 5.5l5 5M10.5 5.5l-5 5" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" />
+         </g>
+       )}
     </g>
   );
 };

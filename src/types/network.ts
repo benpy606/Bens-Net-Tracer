@@ -64,6 +64,14 @@ export interface VLSMResult {
   error?: string;
 }
 
+export interface SimEvent {
+  id: string;
+  protocol: string;
+  source: string;
+  dest: string;
+  status: string;
+}
+
 export interface CanvasNote {
   id: string;
   text: string;

@@ -1,13 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 
+export type Theme = 'default' | 'carbon-mint' | 'amethyst-void' | 'cyber-rose';
+
 interface CiscoMenuBarProps {
-  onSave: () => void;
-  onLoad: () => void;
-  onClear: () => void;
-  onExportJSON: () => void;
-  onToggleHelp: () => void;
-  activeTab: 'logical' | 'physical';
-  setActiveTab: (tab: 'logical' | 'physical') => void;
+   onSave: () => void;
+   onLoad: () => void;
+   onClear: () => void;
+   onExportJSON: () => void;
+   onToggleHelp: () => void;
+   activeTab: 'logical' | 'physical';
+   setActiveTab: (tab: 'logical' | 'physical') => void;
+   currentTheme?: Theme;
+   onThemeChange?: (theme: Theme) => void;
 }
 
 const MENU_ITEMS: Record<string, { label: string; icon?: string }[]> = {
@@ -53,46 +57,97 @@ const MENU_ITEMS: Record<string, { label: string; icon?: string }[]> = {
 };
 
 export const CiscoMenuBar: React.FC<CiscoMenuBarProps> = ({
-  onSave,
-  onLoad,
-  onClear,
-  onExportJSON,
-  onToggleHelp,
+   onSave,
+   onLoad,
+   onClear,
+   onExportJSON,
+   onToggleHelp,
+   currentTheme = 'default',
+   onThemeChange,
 }) => {
-  const [activeMenu, setActiveMenu] = useState<string | null>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
+   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+   const menuRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+   const THEMES: { value: Theme; label: string; icon: string }[] = [
+      { value: 'default', label: 'Default Slate', icon: '⚪' },
+      { value: 'carbon-mint', label: 'Carbon Mint', icon: '🟢' },
+      { value: 'amethyst-void', label: 'Amethyst Void', icon: '🟣' },
+      { value: 'cyber-rose', label: 'Cyber Rose', icon: '🟥' },
+   ];
+
+   const handleThemeChange = (theme: Theme) => {
+      onThemeChange?.(theme);
+      setActiveMenu(null);
+   };
+
+useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+          setActiveMenu(null);
+        }
+      };
+      const handleEscape = (event: KeyboardEvent) => {
+        if (event.key === 'Escape') setActiveMenu(null);
+      };
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleEscape);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+        document.removeEventListener('keydown', handleEscape);
+      };
+    }, []);
+
+    const handleInnerAction = (menuKey: string, label: string) => {
+      if (menuKey === 'File') {
+        if (label.includes('New')) onClear();
+        else if (label.includes('Open') || label.includes('Load')) onLoad();
+        else if (label.includes('Save')) onSave();
+        else if (label.includes('Export')) onExportJSON();
+      } else if (menuKey === 'Help') {
+        if (label.includes('Help')) onToggleHelp();
+        else alert('Cisco Packet Tracer Web Simulator v1.0.0\nDeveloped in React.');
+      } else if (menuKey === 'Options' && label.includes('Preferences')) {
+        setActiveMenu('preferences-theme');
+      } else {
+        alert(`${label}: feature coming soon.`);
+      }
+      if (menuKey !== 'Options' || !label.includes('Preferences')) {
         setActiveMenu(null);
       }
     };
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setActiveMenu(null);
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleEscape);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscape);
-    };
-  }, []);
 
-  const handleInnerAction = (menuKey: string, label: string) => {
-    if (menuKey === 'File') {
-      if (label.includes('New')) onClear();
-      else if (label.includes('Open') || label.includes('Load')) onLoad();
-      else if (label.includes('Save')) onSave();
-      else if (label.includes('Export')) onExportJSON();
-    } else if (menuKey === 'Help') {
-      if (label.includes('Help')) onToggleHelp();
-      else alert('Cisco Packet Tracer Web Simulator v1.0.0\nDeveloped in React.');
-    } else {
-      alert(`${label}: feature coming soon.`);
-    }
-    setActiveMenu(null);
-  };
+    const ThemeSelectorDropdown = () => (
+      <div
+        style={{
+          position: 'absolute',
+          top: '100%',
+          left: '0',
+          background: 'rgba(16, 20, 30, 0.97)',
+          backdropFilter: 'blur(20px) saturate(110%)',
+          border: '1px solid var(--border-color-hover)',
+          borderRadius: '10px',
+          minWidth: '200px',
+          padding: '8px',
+          zIndex: 1010,
+          boxShadow: '0 20px 40px rgba(0,0,0,0.5), var(--shadow-glow)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '2px',
+        }}
+      >
+        {THEMES.map((theme) => (
+          <button
+            key={theme.value}
+            onClick={() => handleThemeChange(theme.value)}
+            className={`theme-option ${currentTheme === theme.value ? 'active' : ''}`}
+          >
+            <span className={`theme-color-preview theme-${theme.value}`} />
+            <span style={{ fontSize: '1rem' }}>{theme.icon}</span>
+            <span className="theme-option-label">{theme.label}</span>
+          </button>
+        ))}
+      </div>
+    );
 
   return (
     <div
@@ -195,7 +250,7 @@ export const CiscoMenuBar: React.FC<CiscoMenuBarProps> = ({
               {menuKey}
             </button>
 
-            {isOpen && (
+{isOpen && menuKey !== 'Options' && (
               <div
                 style={{
                   position: 'absolute',
@@ -205,10 +260,10 @@ export const CiscoMenuBar: React.FC<CiscoMenuBarProps> = ({
                   backdropFilter: 'blur(20px) saturate(110%)',
                   border: '1px solid var(--border-color-hover)',
                   borderRadius: '10px',
-                  minWidth: '220px',
+                  minWidth: menuKey === 'File' || menuKey === 'Help' ? '220px' : '220px',
                   padding: '6px',
                   zIndex: 1010,
-                  boxShadow: '0 20px 40px rgba(0,0,0,0.5), 0 0 16px rgba(34,211,238,0.08)',
+                  boxShadow: '0 20px 40px rgba(0,0,0,0.5), var(--shadow-glow)',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '2px',
@@ -237,9 +292,9 @@ export const CiscoMenuBar: React.FC<CiscoMenuBarProps> = ({
                     }}
                     onMouseEnter={(e) => {
                       const el = e.currentTarget;
-                      el.style.background = 'rgba(34, 211, 238, 0.12)';
+                      el.style.background = 'var(--border-active)';
                       el.style.color = '#fff';
-                      el.style.boxShadow = 'inset 0 0 0 1px rgba(34,211,238,0.2)';
+                      el.style.boxShadow = 'inset 0 0 0 1px var(--border-active)';
                     }}
                     onMouseLeave={(e) => {
                       const el = e.currentTarget;
@@ -253,6 +308,9 @@ export const CiscoMenuBar: React.FC<CiscoMenuBarProps> = ({
                   </button>
                 ))}
               </div>
+            )}
+            {activeMenu === 'preferences-theme' && (
+              <ThemeSelectorDropdown />
             )}
           </div>
         );

@@ -47,11 +47,11 @@ export const LogicalPhysicalBar: React.FC<LogicalPhysicalBarProps> = ({
       <div className="cisco-status-metrics">
         <span>
           <strong>Path:</strong>
-          <span style={{ color: '#bfdbfe', fontWeight: 600 }}>Root</span>
+          <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>Root</span>
         </span>
         <span>
           <strong>Topology:</strong>
-          <span style={{ color: '#bfdbfe', fontWeight: 600 }}>
+          <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>
             {nodeCount} Nodes | {linkCount} Links
           </span>
         </span>

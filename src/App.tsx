@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import type { Device, Link, DeviceType, CanvasNote } from './types/network';
-import { CiscoMenuBar } from './components/Common/CiscoMenuBar';
+import { CiscoMenuBar, type Theme } from './components/Common/CiscoMenuBar';
 import { CiscoToolbar } from './components/Common/CiscoToolbar';
 import { LogicalPhysicalBar } from './components/Common/LogicalPhysicalBar';
 import { BottomDock } from './components/Common/BottomDock';
@@ -12,12 +12,31 @@ import { VLSMCalculator } from './components/Sidebar/VLSMCalculator';
 import './App.css';
 
 function App() {
-  const [devices, setDevices] = useState<Device[]>([
-    { id: 'dev-1', type: 'router', name: 'Router_A', x: 200, y: 180, ipAddress: '192.168.1.1', subnetMask: '24', interfaces: [], powerStatus: 'on' },
-    { id: 'dev-2', type: 'switch', name: 'Switch_A', x: 400, y: 260, interfaces: [], powerStatus: 'on' },
-    { id: 'dev-3', type: 'pc', name: 'PC_Client', x: 300, y: 440, ipAddress: '192.168.1.15', subnetMask: '24', gateway: '192.168.1.1', interfaces: [], powerStatus: 'on' },
-    { id: 'dev-4', type: 'server', name: 'Server_A', x: 500, y: 440, ipAddress: '192.168.1.80', subnetMask: '24', gateway: '192.168.1.1', interfaces: [], powerStatus: 'on' }
-  ]);
+   const [devices, setDevices] = useState<Device[]>([
+     { id: 'dev-1', type: 'router', name: 'Router_A', x: 200, y: 180, ipAddress: '192.168.1.1', subnetMask: '24', interfaces: [], powerStatus: 'on' },
+     { id: 'dev-2', type: 'switch', name: 'Switch_A', x: 400, y: 260, interfaces: [], powerStatus: 'on' },
+     { id: 'dev-3', type: 'pc', name: 'PC_Client', x: 300, y: 440, ipAddress: '192.168.1.15', subnetMask: '24', gateway: '192.168.1.1', interfaces: [], powerStatus: 'on' },
+     { id: 'dev-4', type: 'server', name: 'Server_A', x: 500, y: 440, ipAddress: '192.168.1.80', subnetMask: '24', gateway: '192.168.1.1', interfaces: [], powerStatus: 'on' }
+   ]);
+
+   const [theme, setTheme] = useState<Theme>('default');
+
+   useEffect(() => {
+      const savedTheme = localStorage.getItem('net_topology_theme') as Theme | null;
+      if (savedTheme) {
+         setTheme(savedTheme);
+         document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+   }, []);
+
+   useEffect(() => {
+      if (theme !== 'default') {
+         document.documentElement.setAttribute('data-theme', theme);
+      } else {
+         document.documentElement.removeAttribute('data-theme');
+      }
+      localStorage.setItem('net_topology_theme', theme);
+   }, [theme]);
 
   const [links, setLinks] = useState<Link[]>([
     { id: 'link-1', fromDeviceId: 'dev-1', fromPort: 'port-1', toDeviceId: 'dev-2', toPort: 'port-1', status: 'active' },
@@ -32,11 +51,12 @@ function App() {
   const [selectedLinkId, setSelectedLinkId] = useState<string | null>(null);
   const [connectionSourceId, setConnectionSourceId] = useState<string | null>(null);
 
-  // App Layout Settings
+   // App Layout Settings
   const [activeTab, setActiveTab] = useState<'logical' | 'physical'>('logical');
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [activeTool, setActiveTool] = useState<'select' | 'delete' | 'note'>('select');
   const [zoom, setZoom] = useState(1.0);
+  const [viewBox, setViewBox] = useState({ x: 0, y: 0, w: 1200, h: 800 });
   const [configModalDeviceId, setConfigModalDeviceId] = useState<string | null>(null);
 
   // Connection mode toggled from bottom panel
@@ -47,20 +67,21 @@ function App() {
   const [simulationEvents, setSimulationEvents] = useState<Array<{ id: string; protocol: string; source: string; dest: string; status: string }>>([]);
   const [activeSimulationPacket, setActiveSimulationPacket] = useState<{ fromDeviceId: string; toDeviceId: string; progress: number; protocol: string } | null>(null);
 
-// Tab selections for Right Sidebar
-   const [activeRightTab, setActiveRightTab] = useState<'binary' | 'vlsm'>('binary');
+   // Tab selections for Right Sidebar
+    const [activeRightTab, setActiveRightTab] = useState<'binary' | 'vlsm'>('binary');
 
-   // Resizable splitter state
-   const [sidebarWidth, setSidebarWidth] = useState(320);
-   const [isResizingSidebar, setIsResizingSidebar] = useState(false);
-   const sidebarStartXRef = useRef(0);
-   const sidebarStartWidthRef = useRef(0);
-   const [bottomDockHeight, setBottomDockHeight] = useState(200);
-   const [isResizingBottom, setIsResizingBottom] = useState(false);
-   const bottomStartYRef = useRef(0);
-   const bottomStartHeightRef = useRef(0);
+    // Resizable splitter state
+    const [sidebarWidth, setSidebarWidth] = useState(320);
+    const [isResizingSidebar, setIsResizingSidebar] = useState(false);
+    const sidebarStartXRef = useRef(0);
+    const sidebarStartWidthRef = useRef(0);
+    const [bottomDockHeight, setBottomDockHeight] = useState(200);
+    const [isResizingBottom, setIsResizingBottom] = useState(false);
+    const bottomStartYRef = useRef(0);
+    const bottomStartHeightRef = useRef(0);
+    const [simPanelWidth, setSimPanelWidth] = useState(260);
 
-   // Resize handlers - must be defined before useEffect
+    // Resize handlers - must be defined before useEffect
     const stopResizeSidebar = () => {
       setIsResizingSidebar(false);
       document.body.style.userSelect = '';
@@ -384,33 +405,78 @@ function App() {
     }
   };
 
-const handlePlaySimulation = () => {
-     if (simulationEvents.length > 0) {
-       const latest = simulationEvents[0];
-       const src = devices.find((d) => d.name === latest.source);
-       const dst = devices.find((d) => d.name === latest.dest);
-       if (src && dst) {
-         setActiveSimulationPacket({
-           fromDeviceId: src.id,
-           toDeviceId: dst.id,
-           progress: 0,
-           protocol: latest.protocol
-         });
-         let prog = 0;
-         const interval = setInterval(() => {
-           prog += 0.05;
-           if (prog >= 1.0) {
-             clearInterval(interval);
-             setActiveSimulationPacket(null);
-           } else {
-             setActiveSimulationPacket((prev) => (prev ? { ...prev, progress: prog } : null));
-           }
-         }, 50);
-       }
-     } else {
-       alert('Use ping command inside a CLI tab first to generate simulation packets!');
-     }
-   };
+  const handlePlaySimulation = () => {
+      if (simulationEvents.length > 0) {
+        const latest = simulationEvents[0];
+        const src = devices.find((d) => d.name === latest.source);
+        const dst = devices.find((d) => d.name === latest.dest);
+        if (src && dst) {
+          setActiveSimulationPacket({
+            fromDeviceId: src.id,
+            toDeviceId: dst.id,
+            progress: 0,
+            protocol: latest.protocol
+          });
+          let prog = 0;
+          const interval = setInterval(() => {
+            prog += 0.05;
+            if (prog >= 1.0) {
+              clearInterval(interval);
+              setActiveSimulationPacket(null);
+            } else {
+              setActiveSimulationPacket((prev) => (prev ? { ...prev, progress: prog } : null));
+            }
+          }, 50);
+        }
+      } else {
+        alert('Use ping command inside a CLI tab first to generate simulation packets!');
+      }
+    };
+
+    const handleFireEvent = (id: string) => {
+      const ev = simulationEvents.find((e) => e.id === id);
+      if (!ev) return;
+      const src = devices.find((d) => d.name === ev.source);
+      const dst = devices.find((d) => d.name === ev.dest || (d.ipAddress && ev.dest.includes(d.ipAddress)));
+      if (!src || !dst) return;
+      setActiveSimulationPacket({ fromDeviceId: src.id, toDeviceId: dst.id, progress: 0, protocol: ev.protocol });
+      let prog = 0;
+      const interval = setInterval(() => {
+        prog += 0.05;
+        if (prog >= 1.0) {
+          clearInterval(interval);
+          setActiveSimulationPacket(null);
+        } else {
+          setActiveSimulationPacket((prev) => (prev ? { ...prev, progress: prog } : null));
+        }
+      }, 50);
+    };
+
+    const handleEditEvent = (id: string) => {
+      const ev = simulationEvents.find((e) => e.id === id);
+      if (!ev) return;
+      const newSrc = prompt('Edit source name:', ev.source);
+      if (newSrc === null) return;
+      const newDst = prompt('Edit destination:', ev.dest);
+      if (newDst === null) return;
+      const newStatus = prompt('Edit status (Success/Failed/Sent):', ev.status) ?? ev.status;
+      setSimulationEvents((prev) =>
+        prev.map((e) =>
+          e.id === id
+            ? {
+                ...e,
+                source: newSrc,
+                dest: newDst,
+                status: newStatus,
+              }
+            : e
+        )
+      );
+    };
+
+    const handleDeleteEvent = (id: string) => {
+      setSimulationEvents((prev) => prev.filter((e) => e.id !== id));
+    };
 
    const selectedDevice = devices.find((d) => d.id === configModalDeviceId) || null;
    const topologySummary = {
@@ -420,18 +486,20 @@ const handlePlaySimulation = () => {
      mode: simulationMode === 'realtime' ? 'Realtime' : 'Simulation',
    };
 
-    return (
-<div className="cisco-app">
-         {/* Top Header Menu Bar */}
-         <CiscoMenuBar
-          onSave={handleSaveLayout}
-          onLoad={handleLoadLayout}
-          onClear={handleClearLayout}
-          onExportJSON={handleExportJSON}
-          onToggleHelp={() => setIsHelpOpen(true)}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-        />
+return (
+    <div className="cisco-app">
+       {/* Top Header Menu Bar */}
+       <CiscoMenuBar
+        onSave={handleSaveLayout}
+        onLoad={handleLoadLayout}
+        onClear={handleClearLayout}
+        onExportJSON={handleExportJSON}
+        onToggleHelp={() => setIsHelpOpen(true)}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        currentTheme={theme}
+        onThemeChange={setTheme}
+      />
 
         {/* Navigation and Coordinates */}
         <LogicalPhysicalBar
@@ -493,7 +561,7 @@ const handlePlaySimulation = () => {
                   </p>
                 </div>
               ) : (
-                <MainCanvas
+                  <MainCanvas
                   devices={devices}
                   links={links}
                   notes={notes}
@@ -502,6 +570,8 @@ const handlePlaySimulation = () => {
                   connectionSourceId={connectionSourceId}
                   activeTool={activeTool}
                   zoom={zoom}
+                  viewBox={viewBox}
+                  onViewBoxChange={setViewBox}
                   activeSimulationPacket={activeSimulationPacket}
                   onUpdateDevicePosition={handleUpdateDevicePosition}
                   onSelectDevice={(id) => {
@@ -633,8 +703,13 @@ const handlePlaySimulation = () => {
             setIsConnectingMode(false);
             setConnectionSourceId(null);
           }}
-          height={bottomDockHeight}
-        />
+           height={bottomDockHeight}
+           onFireEvent={handleFireEvent}
+           onEditEvent={handleEditEvent}
+           onDeleteEvent={handleDeleteEvent}
+           simPanelWidth={simPanelWidth}
+           onSimPanelResize={setSimPanelWidth}
+         />
 
       {/* Educational Guide Overlay */}
         <HelpOverlay isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />

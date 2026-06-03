@@ -23,8 +23,8 @@ export const CiscoToolbar: React.FC<CiscoToolbarProps> = ({
   zoom,
   setZoom,
 }) => {
-  const handleZoomOut = () => setZoom(Math.max(0.5, zoom - 0.1));
-  const handleZoomIn = () => setZoom(Math.min(2.0, zoom + 0.1));
+  const handleZoomOut = () => setZoom(Math.max(0.25, +(zoom - 0.1).toFixed(2)));
+  const handleZoomIn = () => setZoom(Math.min(5.0, +(zoom + 0.1).toFixed(2)));
   const handleZoomReset = () => setZoom(1.0);
 
   return (
@@ -58,10 +58,9 @@ export const CiscoToolbar: React.FC<CiscoToolbarProps> = ({
         </button>
       </div>
 
-      {/* Zoom and Tools Combined */}
+      {/* Zoom */}
       <div className="cisco-toolbar-group">
-        {/* Zoom Controls */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginRight: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           <button onClick={handleZoomOut} className="cisco-tool-btn" title="Zoom Out">
             <span>➖</span>
           </button>
@@ -73,8 +72,10 @@ export const CiscoToolbar: React.FC<CiscoToolbarProps> = ({
             <span>🔍</span>
           </button>
         </div>
-        
-        {/* Tools */}
+      </div>
+
+      {/* Action Tools */}
+      <div className="cisco-toolbar-group">
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           <button
             onClick={() => setActiveTool('select')}
@@ -86,7 +87,7 @@ export const CiscoToolbar: React.FC<CiscoToolbarProps> = ({
           </button>
           <button
             onClick={() => setActiveTool('delete')}
-            className={`cisco-tool-btn ${activeTool === 'delete' ? 'danger active' : ''}`}
+            className={`cisco-tool-btn ${activeTool === 'delete' ? 'danger' : ''}`}
             title="Delete"
           >
             <span>❌</span>
@@ -94,7 +95,7 @@ export const CiscoToolbar: React.FC<CiscoToolbarProps> = ({
           </button>
           <button
             onClick={() => setActiveTool('note')}
-            className={`cisco-tool-btn ${activeTool === 'note' ? 'primary active' : ''}`}
+            className={`cisco-tool-btn ${activeTool === 'note' ? 'active' : ''}`}
             title="Note Tool"
           >
             <span>📝</span>
@@ -105,7 +106,7 @@ export const CiscoToolbar: React.FC<CiscoToolbarProps> = ({
 
       {/* Right-aligned actions */}
       <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <button onClick={onToggleHelp} className="cisco-tool-btn primary">
+        <button onClick={onToggleHelp} className="cisco-tool-btn">
           <span>❓</span>
           <span>Help</span>
         </button>

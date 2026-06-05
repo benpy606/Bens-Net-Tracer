@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect} from 'react';
 import type { Device, Link, CanvasNote } from '../../types/network';
 import { DeviceNode } from './DeviceNode';
 import { ConnectorLine } from './ConnectorLine';
@@ -16,7 +16,7 @@ interface MainCanvasProps {
   zoom?: number;
   viewBox?: ViewBox;
   onViewBoxChange?: (vb: ViewBox) => void;
-  activeSimulationPacket?: { fromDeviceId: string; toDeviceId: string; progress: number; protocol: string } | null;
+  activeSimulationPacket?: { fromDeviceId: string; toDeviceId: string; progress: number; protocol: string; scaleX?: number; scaleY?: number } | null;
   onUpdateDevicePosition: (id: string, x: number, y: number) => void;
   onSelectDevice: (id: string | null) => void;
   onSelectLink: (id: string | null) => void;
@@ -54,6 +54,7 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
 }) => {
   const canvasRef = useRef<SVGSVGElement | null>(null);
   const [draggedDeviceId, setDraggedDeviceId] = useState<string | null>(null);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [internalViewBox, setInternalViewBox] = useState<ViewBox>({ x: 0, y: 0, w: 1200, h: 800 });
   const [isPanning, setIsPanning] = useState(false);
@@ -100,7 +101,7 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
     setMousePos({ x: wx, y: wy });
 
     if (draggedDeviceId && activeTool === 'select') {
-      onUpdateDevicePosition(draggedDeviceId, wx, wy);
+      onUpdateDevicePosition(draggedDeviceId, wx - dragOffset.x, wy - dragOffset.y);
     }
 
     if (isPanning && canvasRef.current) {
@@ -129,7 +130,7 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
     const wx = toWorldX(e.clientX);
     const wy = toWorldY(e.clientY);
     setDraggedDeviceId(id);
-    onUpdateDevicePosition(id, wx - device.x, wy - device.y);
+    setDragOffset({ x: wx - device.x, y: wy - device.y });
   };
 
   const handleMouseUp = () => {
@@ -168,13 +169,22 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
 
   const sourceDevice = devices.find((d) => d.id === connectionSourceId);
   let envelopePos = { x: 0, y: 0 };
+  let envelopeDirection = { x: 1, y: 0 };
   if (activeSimulationPacket) {
     const src = devices.find((d) => d.id === activeSimulationPacket.fromDeviceId);
     const dst = devices.find((d) => d.id === activeSimulationPacket.toDeviceId);
-    if (src && dst) envelopePos = {
-      x: src.x + (dst.x - src.x) * activeSimulationPacket.progress,
-      y: src.y + (dst.y - src.y) * activeSimulationPacket.progress,
-    };
+    if (src && dst) {
+      const directionX = dst.x - src.x;
+      const directionY = dst.y - src.y;
+      const len = Math.hypot(directionX, directionY);
+      if (len > 0) {
+        envelopeDirection = { x: directionX / len, y: directionY / len };
+      }
+      envelopePos = {
+        x: src.x + (dst.x - src.x) * activeSimulationPacket.progress,
+        y: src.y + (dst.y - src.y) * activeSimulationPacket.progress,
+      };
+    }
   }
 
   return (
@@ -279,12 +289,29 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
         ))}
 
         {activeSimulationPacket && envelopePos.x !== 0 && (
-          <g transform={`translate(${envelopePos.x - 14}, ${envelopePos.y - 10})`} style={{ pointerEvents: 'none', filter: 'url(#packetGlow)' }}>
-            <rect width="28" height="20" rx="6" fill="var(--accent-secondary)" stroke="var(--border-hover)" strokeWidth="1" />
-            <path d="M0 0l14 10 14-10" stroke="var(--border-subtle)" strokeWidth="1" fill="none" />
-            <text x="14" y="15" textAnchor="middle" fill="#fff" style={{ fontSize: '7px', fontWeight: 'bold', fontFamily: "'Inter', sans-serif" }}>
-              {activeSimulationPacket.protocol}
-            </text>
+          <g transform={`translate(${envelopePos.x}, ${envelopePos.y}) rotate(${Math.atan2(envelopeDirection.y, envelopeDirection.x) * 180 / Math.PI})`} style={{ pointerEvents: 'none', filter: 'url(#packetGlow)', willChange: 'transform' }}>
+            <g
+              transform={`scale(${activeSimulationPacket.scaleX ?? 1}, ${activeSimulationPacket.scaleY ?? 1})`}
+              style={{
+                filter: `drop-shadow(0 0 ${6}px var(--accent-cyan))`,
+                transition: 'filter 0.4s ease, fill 0.4s ease',
+              }}
+            >
+              <rect
+                x="-14"
+                y="-10"
+                width="28"
+                height="20"
+                rx="6"
+                fill="var(--accent-secondary)"
+                stroke="var(--border-hover)"
+                strokeWidth="1"
+              />
+              <path d="M-14 0l14 10 14-10" stroke="var(--border-subtle)" strokeWidth="1" fill="none" />
+              <text x="0" y="5" textAnchor="middle" fill="#fff" style={{ fontSize: '7px', fontWeight: 'bold', fontFamily: "'Inter', sans-serif" }}>
+                {activeSimulationPacket.protocol}
+              </text>
+            </g>
           </g>
         )}
       </svg>

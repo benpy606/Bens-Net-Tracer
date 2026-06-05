@@ -65,7 +65,7 @@ function App() {
   // Simulation mode states
   const [simulationMode, setSimulationMode] = useState<'realtime' | 'simulation'>('realtime');
   const [simulationEvents, setSimulationEvents] = useState<Array<{ id: string; protocol: string; source: string; dest: string; status: string }>>([]);
-  const [activeSimulationPacket, setActiveSimulationPacket] = useState<{ fromDeviceId: string; toDeviceId: string; progress: number; protocol: string } | null>(null);
+  const [activeSimulationPacket, setActiveSimulationPacket] = useState<{ fromDeviceId: string; toDeviceId: string; progress: number; protocol: string; scaleX?: number; scaleY?: number } | null>(null);
 
    // Tab selections for Right Sidebar
     const [activeRightTab, setActiveRightTab] = useState<'binary' | 'vlsm'>('binary');

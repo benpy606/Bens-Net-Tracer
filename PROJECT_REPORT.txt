@@ -1,148 +1,139 @@
-================================================================================
-                                 Ben's Net Tracer
-                           PROJECT REPORT & STAGE REVIEW
-================================================================================
-Generated: 2026-06-03
+========================================
+        Ben's Net Tracer
+      PROJECT REPORT & STAGE REVIEW
+========================================
+Generated: 2026-06-05
 Project Location: C:\Users\Jeba Roselet\Desktop\NetTopology
 
-================================================================================
-                           CURRENT PROJECT STAGE
-================================================================================
+========================================
+          CURRENT STAGE STATUS
+========================================
 Stage 7: Persistence & Export (COMPLETED)
-Status: FULLY FUNCTIONAL MINIMUM VIABLE PRODUCT
+Stage 8: Packet Sniffing & Network Analysis (IN PROGRESS)
 
-All 7 stages have been successfully implemented. The application provides a 
-complete web-based network topology simulator with educational tools.
+All 7 core stages have been successfully implemented. The application provides a
+complete web-based network topology simulator with educational tools. Stage 8
+packet sniffing capabilities are currently under development with the core UI
+and mock data pipeline in place.
 
-================================================================================
-                           OVERALL PROJECT REVIEW
-================================================================================
+========================================
+       OVERALL PROJECT SUMMARY: STAGE 8
+========================================
 
 PROJECT OVERVIEW:
-A web-based network topology simulator built with React, TypeScript, and SVG 
-that replicates core Cisco Packet Tracer functionality for educational network 
-design and simulation.
+NetTopology (Ben's Net Tracer) is a web-based network topology simulator built 
+with React, TypeScript, and SVG that replicates core Cisco Packet Tracer 
+functionality for educational network design and simulation.
 
-TECHNICAL STACK:
-- Framework: React 19.2.6 + TypeScript
-- Build Tool: Vite 8.0.12
-- UI: SVG Canvas with CSS glassmorphism design
-- State Management: React hooks (useState, useEffect, useRef)
-- Storage: Browser localStorage for persistence
+Total source files: 27+
+Total lines of code: ~3,800+
+Device types: 5 (router, switch, PC, server, firewall)
+Theme variants: 4 (Default Slate, Carbon Mint, Amethyst Void, Cyber Rose)
 
-PROJECT METRICS:
-- Total Source Files: 20+
-- Total Lines of Code: ~3,000+
-- Device Types Supported: 5 (router, switch, PC, server, firewall)
-- Theme Variants: 4 (Default Slate, Carbon Mint, Amethyst Void, Cyber Rose)
-
-CORE FEATURES IMPLEMENTED:
-1. Drag-and-drop device positioning
-2. Zoom and pan canvas navigation
-3. Port-to-port device connections
-4. Device configuration forms
-5. Interactive Cisco IOS CLI simulator
-6. Realtime/Simulation mode toggle
-7. Visual packet animation
-8. Topology persistence (localStorage)
-9. JSON export/import
-10. Educational subnet tools (Binary Explorer, VLSM Calculator)
-
-================================================================================
-                           PROJECT STAGES BREAKDOWN
-================================================================================
+========================================
+         PROJECT STAGES BREAKDOWN
+========================================
 
 STAGE 1: Foundation & Architecture
-----------------------------------
+------------------------------------
 Status: COMPLETED
+
 Files Created:
 - package.json (project configuration)
-- tsconfig.json (TypeScript setup)
+- tsconfig.json / tsconfig.app.json / tsconfig.node.json (TypeScript setup)
 - vite.config.ts (build configuration)
 - src/types/network.ts (type definitions)
 
 Key Achievements:
 - Vite + React + TypeScript project scaffolded
-- Professional design system with CSS variables
-- Theme architecture (4 color themes implemented)
+- Professional design system with CSS custom properties
+- Theme architecture (4 color themes via data-theme attribute)
 - TypeScript interfaces for:
   * Device, DeviceType (router, switch, server, firewall, pc)
   * DeviceInterface (MAC, IP, subnet, status)
   * Link (device connections)
   * SubnetInfo, VLSMInput, VLSMResult
   * SimEvent, CanvasNote
+  * Packet, PacketLayer, PacketField, HighlightRange (Stage 8)
 
---------------------------------------------------------------------------------
+--------------------------------------------------------------
 
 STAGE 2: UI Components
-----------------------
+-----------------------
 Status: COMPLETED
+
 Files Created:
-- src/components/Common/CiscoMenuBar.tsx
-- src/components/Common/CiscoToolbar.tsx
-- src/components/Common/LogicalPhysicalBar.tsx
-- src/components/Common/BottomDock.tsx
-- src/components/Common/DataLogTable.tsx
-- src/components/Common/HelpOverlay.tsx
+- src/components/Common/CiscoMenuBar.tsx      (top nav + theme switcher)
+- src/components/Common/CiscoToolbar.tsx      (icon toolbar + zoom)
+- src/components/Common/LogicalPhysicalBar.tsx(logical/physical toggle)
+- src/components/Common/BottomDock.tsx        (device panel + simulation controls)
+- src/components/Common/DataLogTable.tsx      (simulation event table)
+- src/components/Common/HelpOverlay.tsx       (context help dialog)
 
 Key Achievements:
 - Top Menu Bar with dropdown menus (File, Edit, View, Tools, Extensions, Window, Help)
 - Secondary Toolbar with tool modes (select, delete, note)
-- Zoom controls (in, out, reset)
-- Logical/Physical view toggle
-- Resizable bottom and side panels
-- Glassmorphism design with blur effects
+- Zoom controls (in, out, reset) + wheel zoom on canvas
+- Logical/Physical view toggle (physical shows placeholder card)
+- Resizable bottom and side panels with drag splitters
+- Glassmorphism design with backdrop-blur effects
 - Status indicators and notification chips
 
---------------------------------------------------------------------------------
+--------------------------------------------------------------
 
-STAGE 3: Canvas System
-----------------------
+STAGE 3: Canvas System (SVG)
+-----------------------------
 Status: COMPLETED
+
 Files Created:
-- src/components/Canvas/MainCanvas.tsx
-- src/components/Canvas/DeviceNode.tsx
-- src/components/Canvas/ConnectorLine.tsx
-- src/components/Canvas/DevicePalette.tsx
+- src/components/Canvas/MainCanvas.tsx   (SVG workspace)
+- src/components/Canvas/DeviceNode.tsx   (device SVG component)
+- src/components/Canvas/ConnectorLine.tsx(link visualization)
+- src/components/Canvas/DevicePalette.tsx(device selection panel)
 
 Key Achievements:
 - SVG-based interactive canvas
-- Grid system (dot-grid and grid-lines patterns)
-- Mouse-based panning with grab cursor states
-- Zoom with viewBox manipulation
-- Coordinate transformation (client to world coordinates)
+- Grid system (dot-grid and grid-lines SVG patterns)
+- Mouse-based panning with grab/grabbing cursor states
+- Zoom with viewBox manipulation (factor 0.25x to 5x)
+- Coordinate transformation (client-to-world)
 - Device rendering with custom SVG icons
-- Connection line visualization
-- Animated packet simulation envelopes
+- Connection line visualization with active-state glow filter
+- Animated packet simulation envelopes (rotated, scaled, shadowed)
+- Note placement and rendering on canvas
 
---------------------------------------------------------------------------------
+--------------------------------------------------------------
 
 STAGE 4: Device Configuration
------------------------------
+------------------------------
 Status: COMPLETED
+
 Files Created:
-- src/components/Sidebar/DeviceConfigModal.tsx
-- src/components/Sidebar/PropertiesEditor.tsx
+- src/components/Sidebar/DeviceConfigModal.tsx   (floating config modal)
+- src/components/Sidebar/PropertiesEditor.tsx    (interface editing form)
 
 Key Achievements:
 - Floating draggable modal window
-- Resizable modal (edges and corner)
+- Resizable modal via edge/corner drag
 - Three configuration tabs:
   * Physical: Power toggle, module slots, port visualization
-  * Config: Hostname, interface IP/subnet editing form
+  * Config: Hostname, interface IP/subnet editing form (PropertiesEditor)
   * CLI: Interactive Cisco IOS command simulator
 - CLI Modes implemented:
   * User Exec Mode (>)
   * Privileged Exec Mode (#)
   * Global Configuration (config#)
   * Interface Configuration (config-if#)
-- Commands supported: enable, configure, interface, ip address, shutdown, no shutdown, ping
+- Commands supported: enable, configure, interface, ip address,
+  shutdown, no shutdown, ping
+- Packet generation from ping events feeds into sniffer backend
 
---------------------------------------------------------------------------------
+--------------------------------------------------------------
 
 STAGE 5: Educational Tools
---------------------------
+---------------------------
 Status: COMPLETED
+
 Files Created:
 - src/components/Sidebar/BinaryExplorer.tsx
 - src/components/Sidebar/VLSMCalculator.tsx
@@ -161,88 +152,158 @@ Key Achievements:
   * Detailed subnet allocation table
   * Success/error handling for insufficient space
 
---------------------------------------------------------------------------------
+--------------------------------------------------------------
 
 STAGE 6: Simulation Engine
---------------------------
+---------------------------
 Status: COMPLETED
+
 Files Modified:
 - src/App.tsx (simulation logic integration)
+- src/components/Canvas/MainCanvas.tsx (envelope rendering)
 
 Key Achievements:
-- Connection mode state management
-- Port connection validation (no duplicates)
-- Packet animation with progress tracking
+- Connection mode state management from BottomDock
+- Port connection validation (no duplicate links)
+- Packet animation with progress tracking (0 → 1.0 over 18 ticks)
 - Realtime vs Simulation mode:
-  * Realtime: Immediate ping results
-  * Simulation: Animated packet travel
-- Event logging system
-- Ping command triggered from CLI
+  * Realtime: Immediate ping results added to event log
+  * Simulation: Animated envelope travels from src → dst, then logs event
+- Event logging system in DataLogTable
+- Ping command triggered from CLI tab → calls handleTriggerPing
 - Success/failure visual feedback
+- handlePlaySimulation / handleFireEvent / handleEditEvent / handleDeleteEvent
 
---------------------------------------------------------------------------------
+--------------------------------------------------------------
 
 STAGE 7: Persistence & Export
------------------------------
+------------------------------
 Status: COMPLETED
+
 Files Modified:
 - src/App.tsx (persistence handlers)
 
 Key Achievements:
-- Auto-load saved topology on app init
-- Save to localStorage (devices, links, notes)
+- Auto-load saved topology on app init (devices, links, notes from localStorage)
+- Save to localStorage (net_topology_devices, net_topology_links, net_topology_notes)
 - Load from localStorage
-- Clear/reset topology with confirmation
-- JSON export (download file)
-- Topology summary statistics
+- Clear/reset topology with window.confirm guard
+- JSON export (Blob download as network_topology_schema.json)
+- Topology summary statistics (nodes, links, notes, mode)
 
-================================================================================
-                           FILE STRUCTURE SUMMARY
-================================================================================
+--------------------------------------------------------------
+
+STAGE 8: Packet Sniffing & Network Analysis
+-------------------------------------------
+Status: IN PROGRESS
+
+Files Created:
+- src/types/packet.ts
+  * PacketField, PacketLayer, Packet, HighlightRange interfaces
+- src/utils/packetMockData.ts
+  * PROTOCOL_COLORS map (ICMP=#3b82f6, DNS=#f59e0b, HTTP=#10b981, ARP=#f43f5e, TCP=#a855f7, UDP=#22c55e, Unknown=#94a3b8)
+  * generateMockPacket() factory with deep-clone safety
+- src/components/PacketSniffer.tsx
+  * 3-pane Wireshark-style UI: packet list | protocol layers | hex+ASCII viewer
+  * Hex dump with 16-byte rows, per-layer color tinting
+  * Expandable/collapsible protocol layers with hover highlight
+  * Display filter input (searches protocol, source, destination, packet number)
+  * Start/Stop/Clear capture controls
+  * Hover row → highlights Ethernet frame in hex viewer
+  * Select row → expands all layers and highlights full frame
+- src/components/PacketSniffer.css
+  * Styles for all sniffer sub-components
+
+Files Modified:
+- src/App.tsx
+  * serializeAndCapturePacket() — backbone of sniffing pipeline
+  * generateHexDump() — random byte arrays per protocol
+  * buildLayers() — packet field construction (Ethernet II, IPv4, ICMP/DNS/HTTP)
+  * handleTriggerPing() — now calls serializeAndCapturePacket() on success/failure
+  * handlePlaySimulation / handleFireEvent — both capture packets
+  * window.triggerTestPacket (test API for manual packet injection)
+  * capturedPackets state (capped at 2000, passed to PacketSniffer)
+
+Backend Logic in App.tsx:
+- generateHexDump(protocol): ICMP=98B, DNS=76B, HTTP=523B, default=60B
+- buildLayers(protocol, source, dest):
+  * Base: Ethernet II (Dst MAC, Src MAC, Type=0x0800) + IPv4
+  * ICMP: adds Internet Control Message Protocol (Type/Code/Checksum)
+  * DNS: adds UDP (port 53) + DNS query fields
+  * HTTP: adds TCP (port 80, PSH+ACK) + HTTP GET fields
+  * Other: generic TCP layer
+- serializeAndCapturePacket(event):
+  * Generates hex bytes → ASCII bytes → layers
+  * Assembles Packet object with unique ID, packet number, relative timestamp
+  * Appends to capturedPackets (truncates to last 2000)
+  * Called on every ping success, ping failure, simulation play, and event fire
+
+UI Design (PacketSniffer.tsx):
+- Toolbar: Start (green) | Stop (red) | Clear (gray) | Display filter | Status dot + count
+- Packet List: 7-column table (No, Time, Source, Destination, Protocol, Length, Info)
+  * Colored protocol chips, alternating row backgrounds
+  * Hover → Ethernet frame highlight; Click → full layer expansion
+- Protocol Layers: color-coded expandable rows with chevron toggle
+  * Layer fields displayed as "name: value" pairs
+  * Hover layer → hex bytes for that layer are highlighted
+- Hex & ASCII pane:
+  * 16-byte rows with Offset + hex bytes + ASCII characters
+  * Per-byte tinting: each protocol layer has a unique color
+  * Active highlight overrides tint (cyan #34d3eb)
+  * Non-printable bytes rendered as '.'
+
+========================================
+          FILE STRUCTURE (CURRENT)
+========================================
 
 src/
-├── App.tsx                    - Main application component
-├── App.css                    - Application-specific styles
-├── main.tsx                   - React entry point
-├── index.css                  - Global styles and design tokens
+├── App.tsx                        - Main component: all state + event handlers
+├── App.css                        - Application styles
+├── main.tsx                       - React entry point
+├── index.css                      - Global design tokens + reset
 ├── types/
-│   └── network.ts             - TypeScript type definitions
+│   ├── network.ts                 - Network & device type definitions
+│   └── packet.ts                  - Sniffer packet types (Stage 8)
 ├── components/
 │   ├── Common/
-│   │   ├── CiscoMenuBar.tsx   - Top navigation menu
-│   │   ├── CiscoToolbar.tsx   - Secondary tool bar
-│   │   ├── LogicalPhysicalBar.tsx - View toggle bar
-│   │   ├── BottomDock.tsx     - Bottom device/simulation panel
-│   │   ├── DataLogTable.tsx   - Event table component
-│   │   └── HelpOverlay.tsx    - Help dialog
+│   │   ├── CiscoMenuBar.tsx       - Top menu + theme switcher
+│   │   ├── CiscoToolbar.tsx       - Secondary toolbar + zoom
+│   │   ├── LogicalPhysicalBar.tsx - View mode toggle
+│   │   ├── BottomDock.tsx         - Bottom panel: devices, sim, events
+│   │   ├── DataLogTable.tsx       - Simulation event table component
+│   │   └── HelpOverlay.tsx        - Help overlay dialog
 │   ├── Canvas/
-│   │   ├── MainCanvas.tsx     - SVG workspace
-│   │   ├── DeviceNode.tsx     - Device SVG component
-│   │   ├── ConnectorLine.tsx  - Link visualization
-│   │   └── DevicePalette.tsx  - Device selection panel
-│   └── Sidebar/
-│       ├── DeviceConfigModal.tsx - Device configuration modal
-│       ├── VLSMCalculator.tsx - Subnet calculator tool
-│       └── BinaryExplorer.tsx - Binary IP explorer tool
+│   │   ├── MainCanvas.tsx         - SVG workspace with zoom/pan
+│   │   ├── DeviceNode.tsx         - Individual device SVG node
+│   │   ├── ConnectorLine.tsx      - Link/connector SVG line
+│   │   └── DevicePalette.tsx      - Device palette panel
+│   ├── Sidebar/
+│   │   ├── DeviceConfigModal.tsx  - Config modal (Physical/Config/CLI)
+│   │   ├── PropertiesEditor.tsx   - Device interface properties form
+│   │   ├── VLSMCalculator.tsx     - VLSM subnet calculator
+│   │   ├── BinaryExplorer.tsx     - Binary IP explorer
+│   │   └── PacketSniffer.tsx      - Packet sniffer UI (Stage 8)
+│   └── PacketSniffer.css          - Sniffer component styles
 └── utils/
-    ├── subnetCalc.ts          - Subnet calculation utilities
-    └── vlsm.ts                - VLSM algorithm utilities
+    ├── subnetCalc.ts              - Subnet calculation helpers
+    ├── vlsm.ts                    - VLSM allocation algorithm
+    └── packetMockData.ts          - Mock packet data generator (Stage 8)
 
-================================================================================
-                           FUTURE ENHANCEMENT OPPORTUNITIES
-================================================================================
+========================================
+      FUTURE ENHANCEMENT OPPORTUNITIES
+========================================
 
 HIGH PRIORITY:
+- [x] Real-time packet sniffing visualization (Stage 8 - IN PROGRESS)
 - [ ] Multiuser collaboration features
 - [ ] Activity Wizard for guided learning
-- [ ] Network protocol simulation (TCP, UDP, HTTP)
-- [ ] Real-time packet sniffing visualization
+- [ ] Network protocol simulation (TCP, UDP, HTTP enhanced)
 
 MEDIUM PRIORITY:
 - [ ] Physical view with rack/cabinet rendering
-- [ ] Cable types (straight-through, crossover)
+- [ ] Cable types (straight-through, crossover, fiber)
 - [ ] Device templates and custom models
-- [ ] Import/Import .pkt files (Packet Tracer format)
+- [ ] Import/Export .pkt files (Packet Tracer format)
 
 LOW PRIORITY:
 - [ ] Tutorial/onboarding system
@@ -250,9 +311,9 @@ LOW PRIORITY:
 - [ ] Mobile-responsive design
 - [ ] Offline PWA support
 
-================================================================================
-                           RUNNING THE APPLICATION
-================================================================================
+========================================
+        RUNNING THE APPLICATION
+========================================
 
 Development Server:
   npm run dev
@@ -266,6 +327,6 @@ Preview Build:
 Lint Check:
   npm run lint
 
-================================================================================
-                           END OF REPORT
-================================================================================
+========================================
+           END OF REPORT
+========================================

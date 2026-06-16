@@ -2,14 +2,13 @@
 
 An interactive, high-fidelity web-based network topology designer and real-time protocol simulation engine built with **React**, **TypeScript**, and **Tailwind CSS**.
 
-Bens-Net-Tracer lets you visually design network layouts (Routers, Switches, PCs, and Servers), configure addressing, and observe frame serialization and packet transmission mechanics in an animated, deterministic simulation.
+Bens-Net-Tracer lets you visually design network layouts (Routers, Switches, PCs, and Servers), configure addressing, and observe frame serialization and packet transmission mechanics in an animated, educational environment.
 
 ---
 
 ## 🚀 Live Demo
 
-🔗 View the Live Deployment Hosted on Vercel: https://your-project-name.vercel.app  
-*(Update this link after you deploy — see "Deployment" below.)*
+🔗 View the Live Deployment Hosted on Vercel: https://bens-net-tracer.vercel.app/
 
 ---
 
@@ -139,4 +138,11 @@ This repository is unlicensed by default. Add a LICENSE file (MIT, Apache-2.0, e
 
 ## 📫 Contact
 
-Created by benpy606. For questions or feedback, open an issue or reach out via GitHub.
+Created by [benpy606](https://github.com/benpy606).
+
+For questions, feedback, or to report issues:
+
+- Open an issue on this repository: https://github.com/benpy606/Bens-Net-Tracer/issues
+- Reach out via my GitHub profile: https://github.com/benpy606
+
+If you'd like to publish an email or additional contact methods here, tell me what to add and I will update the README.

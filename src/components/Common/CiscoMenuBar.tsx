@@ -203,7 +203,7 @@ useEffect(() => {
               lineHeight: '1.1',
             }}
           >
-            NetTopology
+            Ben's NET tRACER
           </span>
           <span
             style={{
